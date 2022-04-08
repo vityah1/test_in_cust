@@ -1,0 +1,6 @@
+*.json
+*.cmd
+*.pyc
+venv/
+*.log
+migrations/
