@@ -1,10 +1,10 @@
-import re
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_cors import cross_origin
 from utils import do_sql_cmd, do_sql_sel
-from func import cfg
-from models import Item
+
+# from func import cfg
+# from models import Item
 
 api_crud_bp = Blueprint(
     "api_crud_bp",
@@ -12,21 +12,27 @@ api_crud_bp = Blueprint(
 )
 
 
-dict_phones = cfg.get("dict_phones")
-
-
-@api_crud_bp.route("/api/costs", methods=["POST"])
+@api_crud_bp.route("/api/items", methods=["POST"])
 @cross_origin()
 @jwt_required()
 def new_cost():
     """
     insert a new cost
-    input: rdate,cat,sub_cat,mydesc,suma
+    input: article,name,item_image
     """
     req = request.get_json()
+    data = {
+        "article": req.get("article", ""),
+        "name": req.get("name", ""),
+        "item_image": req.get("item_image", ""),
+        "id_user": get_jwt_identity(),
+        "price": req.get("price", 0),
+        "currency": req.get("currency", 0),
+    }
     res = do_sql_cmd(
-        f"""insert into `myBudj` (rdate,cat,sub_cat,mydesc,suma) 
-        values ('{req.get("rdate","")}', '{req['cat']}', '{req.get("sub_cat","")}','{req.get("mydesc","")}',{req['suma']})"""
+        """insert into `items` (article,name,item_image,id_user,price,currency) 
+        values (:article,:name,:item_image,:id_user,:price,:currency)""",
+        data,
     )
     if res["rowcount"] < 1:
         return jsonify({"status": "error", "data": res["data"]})
@@ -34,123 +40,104 @@ def new_cost():
     return jsonify({"status": "ok", "data": res["data"], "id": res["rowcount"]})
 
 
-@api_crud_bp.route("/api/costs/", methods=["GET"])
+@api_crud_bp.route("/api/items/", methods=["GET"])
 # @cross_origin(supports_credentials=True)
 @cross_origin()
 @jwt_required()
-def ret_costs():
+def ret_items():
     """
-    list or search all costs.
-    if not set conditions year and month then get current year and month
+    list or search all items.
     if set q then do search
-    input: q,cat,year,month
+    input: q,sort
     """
-    q = request.args.get("q", "")
-    sort = request.args.get("sort", "")
-    cat = request.args.get("cat", "")
-    year = request.args.get("year", "")
-    month = request.args.get("month", "")
-    # print(f"sort: {sort}, year: {year}, month: {month}")
-
-    um = []
-
-    if q:
-        um.append(
-            f" and (`cat` like '%{q}%' or  `sub_cat` like '%{q}%' or  `mydesc` like '%{q}%' or `owner` like '%{q}%')"
-        )
+    data = {
+        "q": request.args.get("q", ""),
+        "sort": request.args.get("sort", ""),
+        "id_user": get_jwt_identity(),
+    }
 
     if not sort:
-        sort = "order by suma desc"
+        sort = "order by price desc"
     elif sort == "1":
-        sort = "order by rdate desc"
-    elif sort == "2":
-        sort = "order by cat"
-    elif sort == "3":
-        sort = "order by suma desc"
-    else:
-        sort = "order by  suma desc"
+        sort = "order by name desc"
 
-    if year:
-        um.append(f" and extract(YEAR from rdate)={year}")
+    if data["q"]:
+        search_query = "and (name like '%:q%' or article like '%:q%') "
     else:
-        um.append(f" and extract(YEAR from rdate)=extract(YEAR from now())")
-    if month:
-        um.append(f" and extract(MONTH from rdate)={month}")
-    else:
-        um.append(f" and extract(MONTH from rdate)=extract(MONTH from now())")
-
-    if cat and cat != "last":
-        um.append(f" and cat='{cat}'")
-    else:
-        um = []
-        um.append(f" and rdate>=DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY) ")
+        search_query = ""
 
     sql = f"""
-select id,rdate,cat,sub_cat,mydesc,suma
-from `myBudj`
-where 1=1 {' '.join(um)}
+select id,article,name,item_image,price,currency
+from `items`
+where 1=1 
+{search_query}
+and id_user=:id_user
 {sort}
 """
-    # print(sql)
-    pattern = re.compile(r"(\+38)?0\d{9}", re.MULTILINE)
-    phone_number = ""
-    res = [dict(row) for row in do_sql_sel(sql)]
-    if res[0].get("rowcount") is not None and res[0].get("rowcount") < 0:
-        return jsonify([{"cat": "Помилки", "mydesc": "Помилка виконання запиту"}])
-    for r in res:
-        if pattern.search(r["sub_cat"]):
-            phone_number = pattern.search(r["sub_cat"]).group(0)
-            if phone_number in dict_phones:
-                r["mydesc"] += dict_phones[phone_number]
 
+    res = {"status": "ok", "data": [dict(row) for row in do_sql_sel(sql, data)]}
+    if res[0].get("rowcount") is not None and res[0].get("rowcount") < 0:
+        return jsonify(
+            {
+                "status": "error",
+                "data": [{"article": "Помилки", "name": "Помилка виконання запиту"}],
+            }
+        )
     return jsonify(res)
 
 
-@api_crud_bp.route("/api/costs/<int:id>", methods=["GET"])
+@api_crud_bp.route("/api/items/<int:id>", methods=["GET"])
 @cross_origin()
 @jwt_required()
 def ret_cost(id):
     """
-    get info about cost
+    get info about item
     input: id
     """
-    sql = f"select id,rdate,cat,sub_cat,mydesc,suma from myBudj where id={id}"
-    res = do_sql_sel(sql)
-    # for r in res:
-    # print(f"{r=}")
-    # return jsonify([dict(row) for row in do_sql_sel(sql)])
-    return jsonify([dict(row) for row in res])
+    sql = f"select id,article,name,item_image,price,currency from `items` where id=:id and id_user=:id_user"
+    data = {"id": id, "id_user": get_jwt_identity()}
+    res = do_sql_sel(sql, data)
+    return jsonify({"status": "ok", "data": [dict(row) for row in res]})
 
 
-@api_crud_bp.route("/api/costs/<int:id>", methods=["DELETE"])
+@api_crud_bp.route("/api/items/<int:id>", methods=["DELETE"])
 @cross_origin()
 @jwt_required()
 def del_cost(id):
     """
-    mark delete cost
+    mark delete item
     input: id
     """
-    res = do_sql_cmd(f"update myBudj set deleted=1 where id={id}")
+    res = do_sql_cmd(
+        "update `items` set deleted=1 where id=:id and id_user=:id_user",
+        {"id": id, "id_user": get_jwt_identity()},
+    )
     if res["rowcount"] < 1:
         return jsonify({"status": "error", "data": res["data"]})
 
     return jsonify({"status": "ok", "data": res["data"]})
 
 
-@api_crud_bp.route("/api/costs/<id>", methods=["PUT"])
+@api_crud_bp.route("/api/items/<id>", methods=["PUT"])
 @cross_origin()
 @jwt_required()
 def upd_cost(id):
     """
-    update a cost
-    input: rdate,cat,sub_cat,mydesc,suma,id
+    update a item
+    input: article,name,item_image,price,currency
     """
     req = request.get_json()
-    sql = f"""update myBudj set cat='{req['cat']}', rdate='{req['rdate']}', sub_cat='{req.get("sub_cat","")}',mydesc='{req.get("mydesc","")}'
-        ,suma={req['suma']}  
-        where id={id}"""
-    # print(sql)
-    res = do_sql_cmd(sql)
+    sql = f"""update items set article=:article,name=:name,item_image=:item_image,price:=price,currency=:currency
+        where id=:id"""
+    data = {
+        "article": req.get("article", ""),
+        "name": req.get("name", ""),
+        "item_image": req.get("item_image", ""),
+        "id_user": req.get("id_user", 0),
+        "price": req.get("price", 0),
+        "currency": req.get("currency", 0),
+    }
+    res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
         return jsonify({"status": "error", "data": res["data"]})
 

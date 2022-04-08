@@ -10,7 +10,11 @@ def do_sql_cmd(sql="", data=None):
     if re.search(r"^insert|^update|^delete|^commit", sql, re.I):
         try:
             res = db.engine.execute(text(sql), data)
-            return {"rowcount": res.rowcount, "data": f"cnt: {res.rowcount}"}
+            return {
+                "rowcount": res.rowcount,
+                "lastrowid": res.get("lastrowid", 0),
+                "data": f"cnt: {res.rowcount}",
+            }
         except Exception as e:
             with open("fin_man_debugger.log", "a", encoding="utf8") as f:
                 f.write(f"{sql}\n{e}")
@@ -57,6 +61,6 @@ def do_sql_sel(sql="", data=None):
         return db.engine.execute(text(sql), data).fetchall()
         # return result
     except Exception as e:
-        with open("fin_man_debugger.log", "a", encoding="utf8") as f:
+        with open("debugger.log", "a", encoding="utf8") as f:
             f.write(f"{sql}\n{e}")
         return [{"rowcount": -1, "data": f"{e}"}]

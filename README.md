@@ -13,7 +13,7 @@ venv\scripts\activate
 pip3 install -r requirements.txt
 ```
 ## Configuration and setting
-Create and edit simple txt finman_config.json file with next structure:
+Create and edit simple txt config.json file with next structure:
 
 ```json
 {
