@@ -55,7 +55,6 @@ def ret_items():
         "sort": request.args.get("sort", ""),
         "id_user": get_jwt_identity(),
     }
-
     if not sort:
         sort = "order by price desc"
     elif sort == "1":
@@ -80,7 +79,7 @@ and id_user=:id_user
         return jsonify(
             {
                 "status": "error",
-                "data": [{"article": "Помилки", "name": "Помилка виконання запиту"}],
+                "data": [{"article": "error", "name": "Error excecute sql command"}],
             }
         )
     return jsonify(res)
@@ -128,14 +127,15 @@ def upd_cost(id):
     """
     req = request.get_json()
     sql = f"""update items set article=:article,name=:name,item_image=:item_image,price:=price,currency=:currency
-        where id=:id"""
+        where id=:id and id_user=:id_user"""
     data = {
         "article": req.get("article", ""),
         "name": req.get("name", ""),
         "item_image": req.get("item_image", ""),
-        "id_user": req.get("id_user", 0),
+        "id_user": get_jwt_identity(),
         "price": req.get("price", 0),
         "currency": req.get("currency", 0),
+        "id": id,
     }
     res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
