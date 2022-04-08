@@ -12,8 +12,8 @@ def do_sql_cmd(sql="", data=None):
             res = db.engine.execute(text(sql), data)
             return {
                 "rowcount": res.rowcount,
-                "lastrowid": res.get("lastrowid", 0),
-                "data": f"cnt: {res.rowcount}",
+                "lastrowid": res.lastrowid,
+                "data": res.rowcount,
             }
         except Exception as e:
             with open("fin_man_debugger.log", "a", encoding="utf8") as f:
