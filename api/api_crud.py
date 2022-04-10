@@ -17,7 +17,7 @@ api_crud_bp = Blueprint(
 @cross_origin()
 @jwt_required()
 @swag_from('item_insert.yml')
-def new_cost():
+def create_item():
     """
     insert a new item
     """
@@ -27,18 +27,25 @@ def new_cost():
         "name": req.get("name", ""),
         "item_image": req.get("item_image", ""),
         "id_user": get_jwt_identity(),
-        "price": req.get("price", 0,type=int),
-        "currency": req.get("currency", 0,type=int),
     }
     res = do_sql_cmd(
-        """insert into `items` (article,name,item_image,id_user,price,currency) 
-        values (:article,:name,:item_image,:id_user,:price,:currency)""",
+        """insert into `items` (article,name,item_image,id_user) 
+        values (:article,:name,:item_image,:id_user)""",
         data,
     )
     if res["rowcount"] < 1:
         return jsonify({"status": "error", "data": res["data"]})
+    
+    id_item=res["lastrowid"]
+    rowcount=res["rowcount"]
+    res = do_sql_cmd(
+        """insert into `prices` (id_item,price,currency) 
+        values (:id_item,:price,:currency)""",
+        {"id_item":id_item,"price": req.get("price", 0),
+        "currency": req.get("currency", 0)}
+    )
 
-    return jsonify({"status": "ok", "data": res["data"], "id": res["rowcount"]})
+    return jsonify({"status": "ok", "data": rowcount,"lastrowid":id_item, "id": rowcount})
 
 
 @api_crud_bp.route("/api/items/", methods=["GET"])
@@ -58,7 +65,7 @@ def list_items():
         "article": request.args.get("article", ""),
         "sort": request.args.get("sort", ""),
         "id_user": get_jwt_identity(),
-        "page": request.args.get("page",1,type=int)
+        "page": request.args.get("page",1)
     }
 
     if not data["sort"]:
@@ -91,13 +98,13 @@ limit by 10 offset {offset}
 """
 
     res = {"status": "ok", "data": [dict(row) for row in do_sql_sel(sql, data)]}
-    if res[0].get("rowcount") is not None and res[0].get("rowcount") < 0:
-        return jsonify(
-            {
-                "status": "error",
-                "data": [{"article": "error", "name": "Error excecute sql command"}],
-            }
-        )
+    # if res[0].get("rowcount") is not None and res[0].get("rowcount") < 0:
+    #     return jsonify(
+    #         {
+    #             "status": "error",
+    #             "data": [{"article": "error", "name": "Error excecute sql command"}],
+    #         }
+    #     )
     return jsonify(res)
 
 
@@ -142,24 +149,34 @@ def del_cost(id):
 @cross_origin()
 @jwt_required()
 @swag_from('item_update.yml')
-def upd_cost(id):
+def upd_item(id):
     """
     update a item
     """
     req = request.get_json()
-    sql = f"""update items set article=:article,name=:name,item_image=:item_image,price:=price,currency=:currency
-        where id=:id and id_user=:id_user"""
+    sql = f"""update items set article=:article,name=:name,item_image=:item_image
+    where id=:id and id_user=:id_user"""
     data = {
         "article": req.get("article", ""),
         "name": req.get("name", ""),
         "item_image": req.get("item_image", ""),
         "id_user": get_jwt_identity(),
-        "price": req.get("price", 0,type=int),
-        "currency": req.get("currency", 0,type=int),
+        "id": id,
+    }
+    res_item = do_sql_cmd(sql, data)
+    if res_item["rowcount"] < 1:
+        return jsonify({"status": "error", "data": res["data"]})
+
+    sql = f"""update `prices` set 
+    price:=price
+    where id_item=:id and currency=:currency"""
+    data = {
+        "price": req.get("price", 0),
+        "currency": req.get("currency", 0),
         "id": id,
     }
     res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
-        return jsonify({"status": "error", "data": res["data"]})
+        return jsonify({"status": "error", "data": res["data"]})        
 
-    return jsonify({"status": "ok", "data": res["data"]})
+    return jsonify({"status": "ok", "data": res_item["data"]})

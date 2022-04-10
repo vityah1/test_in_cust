@@ -13,82 +13,70 @@ def client():
     with app.test_client() as client:
         yield client
 
+def create_item(client=None,data=None,headers=None):
 
-def create_item(client,data):
-
-    # test_user='test5'
-
-    resp = client.post('/api/items',json=data)
+    resp = client.post('/api/items',json=data,headers=headers)
     assert 200 == resp.status_code
     assert 'ok' == resp.json["status"]       
     assert "lastrowid" in resp.json  
-    assert 1 == resp.json["rowcount"]  
+    assert 1 == resp.json["id"]  
     return resp.json.get("lastrowid",0)  
 
 
-def update_item(client,data):
+def update_item(client=None,item_id=None,data=None,headers=None):
 
-    # test_user='test5'
-
-    resp = client.post('/api/items',json=data)
+    resp = client.put(f'/api/items/{item_id}',json=data,headers=headers)
     assert 200 == resp.status_code
     assert 'ok' == resp.json["status"]       
-    assert "lastrowid" in resp.json  
-    assert 1 == resp.json["rowcount"]  
-    return resp.json.get("lastrowid",0)   
+    assert 1 == resp.json["data"]  
+  
 
-def delete_item(client,data):
+def delete_item(client=None,item_id=None,headers=None):
 
-    # test_user='test5'
-
-    resp = client.post('/api/items',json=data)
+    resp = client.delete(f'/api/items/{item_id}',headers=headers)
     assert 200 == resp.status_code
     assert 'ok' == resp.json["status"]       
     # assert "lastrowid" in resp.json  
-    assert 1 == resp.json["rowcount"]  
-    return resp.json.get("lastrowid",0)    
+    assert 1 == resp.json["data"]  
 
 
-def show_item(client,data):
+def show_item(client=None,item_id=None,headers=None):
 
-    # test_user='test5'
-
-    resp = client.post('/api/items',json=data)
+    resp = client.get(f'/api/items/{item_id}',headers=headers)
     assert 200 == resp.status_code
     assert 'ok' == resp.json["status"]       
-    # assert "lastrowid" in resp.json  
-    # assert 1 == resp.json["rowcount"]  
-    # return resp.json.get("lastrowid",0)    
+    assert 'data' in resp.json
 
-def list_items(client,data):
-
-    # test_user='test5'
-
-    resp = client.post('/api/items',json=data)
+def list_items(client=None,article=None,name=None,headers=None):
+    if article is not None:
+        data={"article":article}
+    elif name is not None:
+        data = {"name":name}
+    resp = client.get('/api/items',json=data,headers=headers)
     assert 200 == resp.status_code
     assert 'ok' == resp.json["status"]       
-    assert "lastrowid" in resp.json  
-    assert 1 == resp.json["rowcount"]  
-    return resp.json.get("lastrowid",0)       
+    assert 'data' in resp.json
 
 
 def test_item(client):
-    with open("users.txt") as f:
-        users=f.readlines()
-    for i,u in enumerate(users,1):
-        test_user=','.split(u)[0]
-        print(f"user: {test_user}")
-        resp = client.post('/api/auth/signin',json={"username":test_user,"password":test_user})
- 
-        data={"article":f"article-{u}","name":f"name {u}","image_item":f"image-{u}","price":i,"currency":866}
-        item_id = create_item(client,data)
-        data["id"]=item_id
-        print(f"new item id: {item_id}")
-        # update_item(client,test_user,data)  
-        # show_item(client,test_user,item_id)  
-        # list_items(client,test_user,article=f"article-{u}")
-        # list_items(client,test_user,name=f"name {u}"f"article-{u}")
-        # delete_item(client,test_user,item_id)  
+
+    test_user='test4'
+    print(f"user: {test_user}")
+
+    resp=client.post('/api/auth/signin',json={"username":"test1","password":"test1"})
+    accessToken = resp.json["accessToken"]
+    headers={"Content-Type": "application/json", "Authorization": f"Bearer {accessToken}"}    
+
+
+    data={"article":f"article-{test_user}","name":f"name {test_user}","image_item":f"image-{test_user}","price":99,"currency":866}
+    item_id = create_item(client=client,data=data,headers=headers)
+    data["id"]=item_id
+    print(f"new item id: {item_id}")
+    update_item(client=client,item_id=item_id,data=data,headers=headers)  
+    show_item(client=client,item_id=item_id,headers=headers)  
+    list_items(client=client,article=f"article-{test_user}",headers=headers)
+    list_items(client=client,name=f"name {test_user}",headers=headers)
+    delete_item(client=client,item_id=item_id)  
 
       
 
