@@ -25,10 +25,10 @@ def check_user():
     sql = "select id,username,password_hash from users where username=:username"
     res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
-        return jsonify({"status": "error", "message": "Bad username or password"}), 401
+        return jsonify({"status": "error", "message": "Bad username or password"}), 200
 
     if not check_password_hash(res.get("data")[0][2], password):
-        return jsonify({"status": "error", "message": "Bad username or password"}), 401
+        return jsonify({"status": "error", "message": "Bad username or password"}), 200
 
     # create a new token with the user id inside
     access_token = create_access_token(
@@ -45,19 +45,16 @@ def check_user():
 
 
 @auth_bp.route("/api/auth/signup", methods=["POST"])
-# @cross_origin()
-# @app.route("/token", methods=["POST"])
+@cross_origin()
 def create_user():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
     password_hash = generate_password_hash(password)
-    # Query your database for username and password
-    # print(f"username:{username}, password:{password}")
     sql = "insert into users (username,password_hash) values (:username,:password_hash)"
     data = {"username": username, "password_hash": password_hash}
     res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
-        return jsonify({"status": "error", "message": "error create username"}), 401
+        return jsonify({"status": "error", "message": "error create username"}), 200
 
     # create a new token with the user id inside
     access_token = create_access_token(
