@@ -1,0 +1,53 @@
+list or search items.
+q - search by name
+article - search by article
+---
+parameters:
+  - name: q
+    in: query
+    type: string
+  - name: article
+    in: query
+    type: string
+  - name: sort
+    in: query
+    type: string
+  - name: page
+    in: query
+    type: int
+
+definitions:
+  List_items:
+    type: object
+    properties:
+      status:
+        type: string
+        example: ok
+      data:
+        type: array
+        items: 
+          type: object
+          properties:
+            id:
+              type: int
+              example: 1
+            article:
+              type: string
+              example: article of item
+            name:
+              type: string
+              example: name of item
+            item_image:
+              type: string   
+              example: image of item
+            price:
+              type: int
+              example: 99
+            currency:
+              type: int     
+              example: 866                                                        
+responses:
+  200:
+    description: Item attributes as json object 
+    schema:
+      $ref: '#/definitions/List_items'

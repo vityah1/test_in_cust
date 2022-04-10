@@ -4,11 +4,13 @@
 # gitb.enable()
 import sys
 
+#added for venv shared hosting
 sys.path.insert(0, "/home/vityah1/kt.if.ua/mypy/gapi/lib/python3.6/site-packages")
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flasgger import Swagger
 
 from flask_migrate import Migrate
 
@@ -19,6 +21,7 @@ from mydb import db
 migrate = Migrate()
 
 app = Flask(__name__)
+swagger = Swagger(app)
 CORS(app, support_credentials=True)
 from func import cfg
 

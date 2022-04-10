@@ -1,0 +1,36 @@
+update item
+---
+parameters:
+  - name: article
+    in: query
+    type: string
+  - name: name
+    in: query
+    type: string
+  - name: item_image
+    in: query
+    type: string
+  - name: price
+    in: query
+    type: int
+  - name: currency
+    in: query
+    type: int
+definitions:
+  Result:
+    type: object
+    properties:
+      status:
+        type: string
+        description: result operation
+        example: ok
+      data:
+        type: int
+        description: count applayed rows
+        example: 1
+responses:
+  200:
+    description: status result 
+    schema:
+      $ref: '#/definitions/Result'
+

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_cors import cross_origin
+from flasgger import swag_from
 from utils import do_sql_cmd, do_sql_sel
 
 # from func import cfg
@@ -15,10 +16,10 @@ api_crud_bp = Blueprint(
 @api_crud_bp.route("/api/items", methods=["POST"])
 @cross_origin()
 @jwt_required()
+@swag_from('item_insert.yml')
 def new_cost():
     """
-    insert a new cost
-    input: article,name,item_image
+    insert a new item
     """
     req = request.get_json()
     data = {
@@ -44,12 +45,12 @@ def new_cost():
 # @cross_origin(supports_credentials=True)
 @cross_origin()
 @jwt_required()
-def ret_items():
+@swag_from('list_items.yml')
+def list_items():
     """
-    list or search items.
-    if set q then do search by name
-    of set article do search by article
-    input: q, sort, article, page
+    list items
+    q - search by name
+    article - search by article        
     """
     
     data = {
@@ -102,10 +103,11 @@ limit by 10 offset {offset}
 @api_crud_bp.route("/api/items/<int:id>", methods=["GET"])
 @cross_origin()
 @jwt_required()
+@swag_from('list_item.yml')
 def ret_cost(id):
     """
     get info about item
-    input: id
+
     """
     sql = f"select id,article,name,item_image,price,currency from `items` where id=:id and id_user=:id_user"
     data = {"id": id, "id_user": get_jwt_identity()}
@@ -116,11 +118,12 @@ def ret_cost(id):
 @api_crud_bp.route("/api/items/<int:id>", methods=["DELETE"])
 @cross_origin()
 @jwt_required()
+@swag_from('item_delete.yml')
 def del_cost(id):
     """
     mark item deleted
-    input: id
-    """
+"""
+
     res = do_sql_cmd(
         "update `items` set deleted=1 where id=:id and id_user=:id_user",
         {"id": id, "id_user": get_jwt_identity()},
@@ -134,10 +137,10 @@ def del_cost(id):
 @api_crud_bp.route("/api/items/<id>", methods=["PUT"])
 @cross_origin()
 @jwt_required()
+@swag_from('item_update.yml')
 def upd_cost(id):
     """
     update a item
-    input: article,name,item_image,price,currency
     """
     req = request.get_json()
     sql = f"""update items set article=:article,name=:name,item_image=:item_image,price:=price,currency=:currency
