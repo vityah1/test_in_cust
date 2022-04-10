@@ -16,7 +16,7 @@ def do_sql_cmd(sql="", data=None):
                 "data": res.rowcount,
             }
         except Exception as e:
-            with open("fin_man_debugger.log", "a", encoding="utf8") as f:
+            with open("debugger.log", "a", encoding="utf8") as f:
                 f.write(f"{sql}\n{e}")
             # print(f"""def do_sql_cmd: error exec sql:\n{e}\n{sql}""")
             return {"rowcount": -1, "data": f"{e}"}
@@ -25,7 +25,7 @@ def do_sql_cmd(sql="", data=None):
             res = db.engine.execute(text(sql), data)
             return {"rowcount": res.rowcount, "data": res.fetchall()}
         except Exception as e:
-            with open("fin_man_debugger.log", "a", encoding="utf8") as f:
+            with open("debugger.log", "a", encoding="utf8") as f:
                 f.write(f"{sql}\n{e}")
             # print(f"""def do_sql_cmd: error exec sql:\n{e}\n{sql}""")
             return {"rowcount": -1, "data": f"""{e}\n{sql} """}
