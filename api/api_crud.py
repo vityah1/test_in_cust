@@ -85,6 +85,7 @@ from `items`
 where 1=1 
 {search_query}
 and id_user=:id_user
+and deleted != 1
 order by {sort}
 limit by 10 offset {offset}
 """
@@ -109,7 +110,10 @@ def ret_cost(id):
     get info about item
 
     """
-    sql = f"select id,article,name,item_image,price,currency from `items` where id=:id and id_user=:id_user"
+    sql = f"""select id,article,name,item_image,price,currency 
+    from `items` 
+    where id=:id and id_user=:id_user and deleted != 1
+    """
     data = {"id": id, "id_user": get_jwt_identity()}
     res = do_sql_sel(sql, data)
     return jsonify({"status": "ok", "data": [dict(row) for row in res]})
