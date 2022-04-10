@@ -26,8 +26,8 @@ def new_cost():
         "name": req.get("name", ""),
         "item_image": req.get("item_image", ""),
         "id_user": get_jwt_identity(),
-        "price": req.get("price", 0),
-        "currency": req.get("currency", 0),
+        "price": req.get("price", 0,type=int),
+        "currency": req.get("currency", 0,type=int),
     }
     res = do_sql_cmd(
         """insert into `items` (article,name,item_image,id_user,price,currency) 
@@ -46,24 +46,37 @@ def new_cost():
 @jwt_required()
 def ret_items():
     """
-    list or search all items.
-    if set q then do search
-    input: q,sort
+    list or search items.
+    if set q then do search by name
+    of set article do search by article
+    input: q, sort, article, page
     """
+    
     data = {
         "q": request.args.get("q", ""),
+        "article": request.args.get("article", ""),
         "sort": request.args.get("sort", ""),
         "id_user": get_jwt_identity(),
+        "page": request.args.get("page",1,type=int)
     }
-    if not sort:
-        sort = "order by price desc"
-    elif sort == "1":
-        sort = "order by name desc"
+
+    if not data["sort"]:
+        sort = "name"
+    elif sort == "article":
+        sort = "article"
+    elif sort == "name":
+        sort = "name"
+    else:
+        sort = "name"
 
     if data["q"]:
-        search_query = "and (name like '%:q%' or article like '%:q%') "
+        search_query = " and name like '%:q%' "
+    elif data["article"]:
+        search_query = " and article = ':article' "        
     else:
         search_query = ""
+
+    offset = 10*data['page']-10
 
     sql = f"""
 select id,article,name,item_image,price,currency
@@ -71,7 +84,8 @@ from `items`
 where 1=1 
 {search_query}
 and id_user=:id_user
-{sort}
+order by {sort}
+limit by 10 offset {offset}
 """
 
     res = {"status": "ok", "data": [dict(row) for row in do_sql_sel(sql, data)]}
@@ -104,7 +118,7 @@ def ret_cost(id):
 @jwt_required()
 def del_cost(id):
     """
-    mark delete item
+    mark item deleted
     input: id
     """
     res = do_sql_cmd(
@@ -133,8 +147,8 @@ def upd_cost(id):
         "name": req.get("name", ""),
         "item_image": req.get("item_image", ""),
         "id_user": get_jwt_identity(),
-        "price": req.get("price", 0),
-        "currency": req.get("currency", 0),
+        "price": req.get("price", 0,type=int),
+        "currency": req.get("currency", 0,type=int),
         "id": id,
     }
     res = do_sql_cmd(sql, data)
