@@ -28,7 +28,7 @@ from func import cfg
 
 @app.before_request
 def log_request_info():
-    with open("fin_man_debugger.log", "a", encoding="utf8") as f:
+    with open("debugger.log", "a", encoding="utf8") as f:
         try:
             f.write(f"Headers: {request.headers}\n")
             f.write(f"Body: {request.get_data()}\n")
@@ -52,11 +52,9 @@ from models import *
 
 migrate.init_app(app, db)
 
-from api.api import api_bp
 from api.api_crud import api_crud_bp
 from auth.auth import auth_bp
 
-app.register_blueprint(api_bp)
 app.register_blueprint(api_crud_bp)
 app.register_blueprint(auth_bp)
 
@@ -70,6 +68,10 @@ def __repr__(self):
 @app.errorhandler(404)
 def page_not_found(error):
     return jsonify({"message": f"{error}, path: {request.path}"}), 404
+
+@app.route("/")
+def index():
+    return "Hello world!"
 
 
 if __name__ == "__main__":
