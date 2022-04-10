@@ -1,0 +1,6 @@
+POST http://127.0.0.1:5000/api/items HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTYyODkyNSwianRpIjoiMmUwYjQxZDMtZjM0NS00OTRjLWI0MjMtODc1MzQ1NWRiYWEzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTgsIm5iZiI6MTY0OTYyODkyNSwiZXhwIjoxNjUyMjIwOTI1fQ.vU21IbzDE_RJ3NZOb04eSxhxzigvcpb5eF6-x8tj40M
+
+{"article":"article-test_user","name":"name test_user","image_item":"image-test_user","price":99,"currency":866}
+
