@@ -10,7 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True)
     password_hash = db.Column(db.String(255))
-    token = db.Column(db.String(100))
+    token = db.Column(db.String(299))
     avatar = db.Column(db.String(100))
 
 
@@ -23,13 +23,9 @@ class Item(db.Model):
     article = db.Column(db.String(20))
     id_user = db.Column(db.Integer, ForeignKey("users.id"))
     name = db.Column(db.String(100))
-    deleted = db.Column(db.Integer)
+    deleted = db.Column(db.Integer, default=0)
     item_image = db.Column(db.String(100))
-    __table_args__ = (
-        UniqueConstraint(
-            "article", "id_user", "deleted", name="u_items_article_id_user"
-        ),
-    )
+    __table_args__ = (UniqueConstraint("article", "id_user", "deleted"),)
 
 
 class Price(db.Model):
@@ -38,14 +34,10 @@ class Price(db.Model):
     __tablename__ = "prices"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_item = db.Column(db.Integer, ForeignKey("items.id"))
+    item_id = db.Column(db.Integer, ForeignKey("items.id"))
     price = db.Column(db.Integer, nullable=False)
     currency = db.Column(db.Integer, ForeignKey("currencies.id"))
-    __table_args__ = (
-        UniqueConstraint(
-            "id_item", "price", "currency", name="u_prices_item_price_currency"
-        ),
-    )
+    __table_args__ = (UniqueConstraint("item_id", "price", "currency"),)
 
 
 class Currency(db.Model):
