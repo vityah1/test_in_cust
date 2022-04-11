@@ -5,7 +5,7 @@ import pytest
 
 from app import app
 
-test_user = f"user_2"
+test_user = f"user_3"
 
 item_id = 1
 accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTY4NDIwNiwianRpIjoiNzY0NmQxYTMtM2NlOC00MGJiLTlmMDItOTJhZjkzZjIyMWZlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjQ5Njg0MjA2LCJleHAiOjE2NTIyNzYyMDZ9.rq1Wz9yHa8CefIPbVh_oUI4hegNFXGla_0qXvJZELm8"
