@@ -16,7 +16,7 @@ api_crud_bp = Blueprint(
 @api_crud_bp.route("/api/items", methods=["POST"])
 @cross_origin()
 @jwt_required()
-@swag_from('item_insert.yml')
+@swag_from("item_insert.yml")
 def create_item():
     """
     insert a new item
@@ -35,69 +35,80 @@ def create_item():
     )
     if res["rowcount"] < 1:
         return jsonify({"status": "error", "data": res["data"]})
-    
-    id_item=res["lastrowid"]
-    rowcount=res["rowcount"]
+
+    id_item = res["lastrowid"]
+    rowcount = res["rowcount"]
     res = do_sql_cmd(
         """insert into `prices` (id_item,price,currency) 
         values (:id_item,:price,:currency)""",
-        {"id_item":id_item,"price": req.get("price", 0),
-        "currency": req.get("currency", 0)}
+        {
+            "id_item": id_item,
+            "price": req.get("price", 0),
+            "currency": req.get("currency", 0),
+        },
     )
 
-    return jsonify({"status": "ok", "data": rowcount,"lastrowid":id_item, "id": rowcount})
+    return jsonify(
+        {"status": "ok", "data": rowcount, "lastrowid": id_item, "id": rowcount}
+    )
 
 
-@api_crud_bp.route("/api/items/", methods=["GET"])
+@api_crud_bp.route("/api/items", methods=["GET"])
 # @cross_origin(supports_credentials=True)
 @cross_origin()
 @jwt_required()
-@swag_from('list_items.yml')
+@swag_from("list_items.yml")
 def list_items():
     """
     list items
     q - search by name
-    article - search by article        
+    article - search by article
     """
-    
+
     data = {
         "q": request.args.get("q", ""),
         "article": request.args.get("article", ""),
         "sort": request.args.get("sort", ""),
         "id_user": get_jwt_identity(),
-        "page": request.args.get("page",1)
+        "page": request.args.get("page", 1),
     }
-
+    sql_data_conditions = {}
     if not data["sort"]:
-        sort = "name"
-    elif sort == "article":
-        sort = "article"
-    elif sort == "name":
-        sort = "name"
+        sql_data_conditions["sort"] = "name"
+    elif data["sort"] == "article":
+        sql_data_conditions["sort"] = "article"
+    elif data["sort"] == "name":
+        sql_data_conditions["sort"] = "name"
     else:
-        sort = "name"
+        sql_data_conditions["sort"] = "name"
 
     if data["q"]:
-        search_query = " and name like '%:q%' "
+        search_query = " and name like :q "
+        sql_data_conditions["q"] = data["q"]
     elif data["article"]:
-        search_query = " and article = ':article' "        
+        search_query = " and article = :article "
+        sql_data_conditions["article"] = data["article"]
     else:
         search_query = ""
 
-    offset = 10*data['page']-10
+    offset = 10 * data["page"] - 10
+
+    sql_data_conditions["offset"] = offset
+    sql_data_conditions["id_user"] = data["id_user"]
 
     sql = f"""
-select id,article,name,item_image,price,currency
-from `items`
+select a.id,article,name,item_image,price,currency
+from `items` a left join `prices` b on a.id=b.id_item
 where 1=1 
 {search_query}
 and id_user=:id_user
 and deleted != 1
-order by {sort}
-limit by 10 offset {offset}
+order by :sort
+limit 10 offset :offset
 """
+    res = do_sql_sel(sql, sql_data_conditions)
+    result = [dict(row) for row in res]
 
-    res = {"status": "ok", "data": [dict(row) for row in do_sql_sel(sql, data)]}
     # if res[0].get("rowcount") is not None and res[0].get("rowcount") < 0:
     #     return jsonify(
     #         {
@@ -105,13 +116,13 @@ limit by 10 offset {offset}
     #             "data": [{"article": "error", "name": "Error excecute sql command"}],
     #         }
     #     )
-    return jsonify(res)
+    return jsonify({"status": "ok", "data": result})
 
 
 @api_crud_bp.route("/api/items/<int:id>", methods=["GET"])
 @cross_origin()
 @jwt_required()
-@swag_from('list_item.yml')
+@swag_from("list_item.yml")
 def ret_cost(id):
     """
     get info about item
@@ -129,11 +140,10 @@ def ret_cost(id):
 @api_crud_bp.route("/api/items/<int:id>", methods=["DELETE"])
 @cross_origin()
 @jwt_required()
-@swag_from('item_delete.yml')
+@swag_from("item_delete.yml")
 def del_cost(id):
     """
-    mark item deleted
-"""
+    mark item deleted"""
 
     res = do_sql_cmd(
         "update `items` set deleted=1 where id=:id and id_user=:id_user",
@@ -148,7 +158,7 @@ def del_cost(id):
 @api_crud_bp.route("/api/items/<id>", methods=["PUT"])
 @cross_origin()
 @jwt_required()
-@swag_from('item_update.yml')
+@swag_from("item_update.yml")
 def upd_item(id):
     """
     update a item
@@ -165,7 +175,7 @@ def upd_item(id):
     }
     res_item = do_sql_cmd(sql, data)
     if res_item["rowcount"] < 1:
-        return jsonify({"status": "error", "data": res["data"]})
+        return jsonify({"status": "error", "data": res_item["data"]})
 
     sql = f"""update `prices` set 
     price:=price
@@ -177,6 +187,6 @@ def upd_item(id):
     }
     res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
-        return jsonify({"status": "error", "data": res["data"]})        
+        return jsonify({"status": "error", "data": res["data"]})
 
     return jsonify({"status": "ok", "data": res_item["data"]})
