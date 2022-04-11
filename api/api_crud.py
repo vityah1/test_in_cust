@@ -36,20 +36,20 @@ def create_item():
     if res["rowcount"] < 1:
         return jsonify({"status": "error", "data": res["data"]})
 
-    id_item = res["lastrowid"]
+    item_id = res["lastrowid"]
     rowcount = res["rowcount"]
     res = do_sql_cmd(
-        """insert into `prices` (id_item,price,currency) 
-        values (:id_item,:price,:currency)""",
+        """insert into `prices` (item_id,price,currency) 
+        values (:item_id,:price,:currency)""",
         {
-            "id_item": id_item,
+            "item_id": item_id,
             "price": req.get("price", 0),
             "currency": req.get("currency", 0),
         },
     )
 
     return jsonify(
-        {"status": "ok", "data": rowcount, "lastrowid": id_item, "id": rowcount}
+        {"status": "ok", "data": rowcount, "lastrowid": item_id, "id": rowcount}
     )
 
 
@@ -98,7 +98,7 @@ def list_items():
 
     sql = f"""
 select a.id,article,name,item_image,price,currency
-from `items` a left join `prices` b on a.id=b.id_item
+from `items` a left join `prices` b on a.id=b.item_id
 where 1=1 
 {search_query}
 and id_user=:id_user
@@ -179,7 +179,7 @@ def upd_item(id):
 
     sql = f"""update `prices` set 
     price:=price
-    where id_item=:id and currency=:currency"""
+    where item_id=:id and currency=:currency"""
     data = {
         "price": req.get("price", 0),
         "currency": req.get("currency", 0),
