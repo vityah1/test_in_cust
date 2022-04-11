@@ -4,7 +4,7 @@
 # gitb.enable()
 import sys
 
-#added for venv shared hosting
+# added for venv shared hosting
 sys.path.insert(0, "/home/vityah1/kt.if.ua/mypy/gapi/lib/python3.6/site-packages")
 
 from flask import Flask, jsonify, request
@@ -41,7 +41,6 @@ app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = f"""mysql+pymysql://{cfg['db_user']}:{cfg['db_passwd']}@{cfg['db_host']}/{cfg['db_db']}"""
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = cfg["secret_key"]
 app.config["PROPAGATE_EXCEPTIONS"] = True
 app.config["JWT_SECRET_KEY"] = cfg["secret_key"]
 
@@ -68,6 +67,7 @@ def __repr__(self):
 @app.errorhandler(404)
 def page_not_found(error):
     return jsonify({"message": f"{error}, path: {request.path}"}), 404
+
 
 @app.route("/")
 def index():
