@@ -1,0 +1,8 @@
+PUT http://127.0.0.1:5000/api/auth/edit HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTY4NDIwNiwianRpIjoiNzY0NmQxYTMtM2NlOC00MGJiLTlmMDItOTJhZjkzZjIyMWZlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjQ5Njg0MjA2LCJleHAiOjE2NTIyNzYyMDZ9.rq1Wz9yHa8CefIPbVh_oUI4hegNFXGla_0qXvJZELm8
+
+{
+    "username": "new_user_2",
+    "avatar": "new_avatar_user_2"
+}
