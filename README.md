@@ -26,7 +26,7 @@ Create and edit simple txt config.json file with next structure:
 ```
 
 ## Create database tables
-3. Execute commands:
+Execute commands:
 ```cmd
 flask db init
 flask db migrate -m "Initial migration."
@@ -34,10 +34,16 @@ flask db upgrade
 ```
 
 ## Local run
-4. python app.app if you run it localy
+if you run it localy
+```cmd
+python app.app 
+```
 
-## Virtual apache shared hosting
-5. edit .htaccess file according to your paths
+## Swagger UI
+http://127.0.0.1:5000/apidocs/
+
+## Deploy on virtual apache shared hosting
+edit .htaccess file according to your paths
 
 
 
