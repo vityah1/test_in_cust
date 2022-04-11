@@ -15,13 +15,11 @@ auth_bp = Blueprint(
 # create_access_token() function is used to actually generate the JWT.
 @auth_bp.route("/api/auth/signin", methods=["POST"])
 @cross_origin()
-# @app.route("/token", methods=["POST"])
-def check_user():
+def login_user():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
     data = {"username": username, "password": password}
-    # Query your database for username and password
-    # print(f"username:{username}, password:{password}")
+
     sql = "select id,username,password_hash from users where username=:username"
     res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
@@ -60,6 +58,12 @@ def create_user():
     access_token = create_access_token(
         identity=res["lastrowid"], expires_delta=timedelta(days=30)
     )
+
+    do_sql_cmd(
+        "update `users` set token=:access_token where id=:id",
+        {"access_token": access_token, "id": res["lastrowid"]},
+    )
+
     return jsonify(
         {
             "status": "ok",
@@ -71,8 +75,7 @@ def create_user():
 
 
 @auth_bp.route("/api/auth/edit", methods=["PUT"])
-# @cross_origin()
-# @app.route("/token", methods=["POST"])
+@cross_origin()
 @jwt_required()
 def edit_user():
     id = get_jwt_identity()
