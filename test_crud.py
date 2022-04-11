@@ -16,7 +16,7 @@ data = {
     "currency": 866,
 }
 
-item_id = 8
+item_id = 1
 accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTY3NjU4NiwianRpIjoiYmU3YzFkOWMtYjY3MC00ZTNkLWJjMmQtZTI1NmZlNjFlN2RiIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MjIsIm5iZiI6MTY0OTY3NjU4NiwiZXhwIjoxNjUyMjY4NTg2fQ.F-lmyaczJuNVgusC3lC5Ea3Ottij2PvMHEKrrl2yDoQ"
 headers = {
     "Content-Type": "application/json",
