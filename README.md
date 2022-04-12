@@ -1,10 +1,11 @@
-flask api-rest boilerplate with auth and migration 0.0.1
+Flask api-rest boilerplate with auth, alembic migration and swagger UI
 
-Small and compact back-end rest-api written on flask with jwt auth.  
+Small and compact back-end rest-api written on flask with jwt auth and swagger UI support. 
 
-Instalation:
-## Requirements
-This is not ideal code but this is simple solution and practise for use flask, jwt tehnologies
+Description localy run, deploy on shared hosting and Heroku server
+
+You can use as a external MySql database and the Heroku Postgres database
+
 ## Instalation:
 ```cmd
 python -m venv venv
