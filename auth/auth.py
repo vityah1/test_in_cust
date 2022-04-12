@@ -52,7 +52,12 @@ def create_user():
     data = {"username": username, "password_hash": password_hash}
     res = do_sql_cmd(sql, data)
     if res["rowcount"] < 1:
-        return jsonify({"status": "error", "message": "error create username"}), 200
+        return (
+            jsonify(
+                {"status": "error", "message": f"error create username {res['data']}"}
+            ),
+            200,
+        )
 
     # create a new token with the user id inside
     access_token = create_access_token(
