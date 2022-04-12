@@ -3,6 +3,6 @@
 *.pyc
 venv/
 *.log
-migrations/
+# migrations/
 .env
 .env.bak
