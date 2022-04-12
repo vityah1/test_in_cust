@@ -1,7 +1,7 @@
-POST http://127.0.0.1:5000/api/auth/signin HTTP/1.1
+POST https://test-in-cast.herokuapp.com/api/auth/signin HTTP/1.1
 content-type: application/json
 
 {
-    "username": "user_2",
-    "password": "user_2"
+    "username": "user_5",
+    "password": "user_5"
 }
