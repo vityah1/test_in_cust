@@ -6,3 +6,5 @@ venv/
 # migrations/
 .env
 .env.bak
+api/*.yml.bak
+*.tmp

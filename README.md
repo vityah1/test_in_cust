@@ -52,7 +52,7 @@ git push heroku master
 ### For work with heroku pg database
  - Goto Resources. Add-ons Heroku Postgtres
  - You got env var `HEROKU_POSTGRESQL_MAUVE_URL`
- - You can choose database `in config.py`
+ - You can choose database in `config.py`
  - For init db struncture run console cmd `flask db upgrade`
 
 ## Swagger UI

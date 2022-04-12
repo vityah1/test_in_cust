@@ -1,6 +1,6 @@
 POST http://127.0.0.1:5000/api/items HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTYyODkyNSwianRpIjoiMmUwYjQxZDMtZjM0NS00OTRjLWI0MjMtODc1MzQ1NWRiYWEzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTgsIm5iZiI6MTY0OTYyODkyNSwiZXhwIjoxNjUyMjIwOTI1fQ.vU21IbzDE_RJ3NZOb04eSxhxzigvcpb5eF6-x8tj40M
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTc2OTIyMCwianRpIjoiZGNlM2NmYmUtMmI1Yy00YTM0LWJkZGEtNzk4YTM5N2UxZGU0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjQ5NzY5MjIwLCJleHAiOjE2NTIzNjEyMjB9.cCu0OGg9JX_MhzUgYAfNJdEcE04zRWMwTxQPvCt_FAM
 
-{"article":"article-test_user","name":"name test_user","image_item":"image-test_user","price":99,"currency":866}
+{"article":"article3-test_user_5","name":"name2 test_user_5","image_item":"image2-test_user_5","price":99,"currency":1}
 

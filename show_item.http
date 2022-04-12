@@ -1,6 +1,4 @@
-PUT http://127.0.0.1:5000/api/items/2 HTTP/1.1
+GET http://127.0.0.1:5000/api/items/2 HTTP/1.1
 content-type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTc2OTIyMCwianRpIjoiZGNlM2NmYmUtMmI1Yy00YTM0LWJkZGEtNzk4YTM5N2UxZGU0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjQ5NzY5MjIwLCJleHAiOjE2NTIzNjEyMjB9.cCu0OGg9JX_MhzUgYAfNJdEcE04zRWMwTxQPvCt_FAM
-
-{"article":"article2-test_user-5","name":"name2 test_user","image_item":"image2-test_user_5","price":99,"currency":1}
 

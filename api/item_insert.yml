@@ -24,9 +24,9 @@ definitions:
         type: string
         description: result operation
         example: ok
-      data:
+      id:
         type: int
-        description: count applayed rows
+        description: id applayed row
         example: 1
 responses:
   200:

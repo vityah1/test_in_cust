@@ -47,7 +47,8 @@ from models import *
 
 migrate.init_app(app, db)
 
-from api.api_crud import api_crud_bp
+# from api.api_crud import api_crud_bp
+from api.api_crud_orm import api_crud_bp
 from auth.auth import auth_bp
 
 app.register_blueprint(api_crud_bp)
