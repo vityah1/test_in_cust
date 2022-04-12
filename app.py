@@ -3,6 +3,7 @@
 # import cgitb
 # gitb.enable()
 import sys
+from os import environ
 
 # added for venv shared hosting
 sys.path.insert(0, "/home/vityah1/kt.if.ua/mypy/gapi/lib/python3.6/site-packages")
@@ -78,5 +79,7 @@ if __name__ == "__main__":
     #    app.run(debug=True)
     #    app.debug=True
     #    app.run(host='0.0.0.0',port=4000)
-    app.run(host="0.0.0.0", debug=False)
+    # app.run(host="0.0.0.0", debug=False)
     # app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
