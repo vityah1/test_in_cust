@@ -35,10 +35,7 @@ def log_request_info():
 
 
 # mysql external database
-# app.config["SQLALCHEMY_DATABASE_URI"] = cfg["DATABASE_URL"]
-
-# pg internal HEROKU db
-app.config["SQLALCHEMY_DATABASE_URI"] = cfg["HEROKU_POSTGRESQL_MAUVE_URL"]
+app.config["SQLALCHEMY_DATABASE_URI"] = cfg["DATABASE_URL"]
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["PROPAGATE_EXCEPTIONS"] = True
 app.config["JWT_SECRET_KEY"] = cfg["secret_key"]
