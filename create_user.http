@@ -2,6 +2,6 @@ POST https://test-in-cast.herokuapp.com//api/auth/signup HTTP/1.1
 content-type: application/json
 
 {
-    "username": "user_3",
-    "password": "user_3"
+    "username": "user_5",
+    "password": "user_5"
 }
