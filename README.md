@@ -15,10 +15,7 @@ pip3 install -r requirements.txt
 Create .env file with next content:
 
 ```.env
-db_host = your db host
-db_user = your db user
-db_passwd = your db password
-db_db = your db
+DATABASE_URL = your database url
 secret_key = your super secret key
 ```
 ## Create database tables
@@ -46,5 +43,9 @@ heroku login
 heroku git:clone -a `name your app`
 git push heroku master 
 ```
+# Add external mysql database to Heroku server
+- add env CLEARDB_DATABASE_URL with your values
+- add env DB_DATABASE_URL  with your values
+
 ## Swagger UI
 http://127.0.0.1:5000/apidocs/
