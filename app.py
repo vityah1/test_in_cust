@@ -72,7 +72,9 @@ def page_not_found(error):
 
 @app.route("/")
 def index():
-    return "Hello world!"
+    return """This is test Flask app for InCat company with authentication and swagger support<br>
+    Swagger UI available on <a href="/apidocs/">this link</a>.
+    """
 
 
 if __name__ == "__main__":
