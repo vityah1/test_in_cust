@@ -48,6 +48,11 @@ git push heroku master
  - PORT = 5000
 ### For work with external mysql database
 - DB_DATABASE_URL = your database url
+### For work with heroku pg database
+ - Goto Resources. Add-ons Heroku Postgtres
+ - You got env var `HEROKU_POSTGRESQL_MAUVE_URL`
+ - You can choose database `in config.py`
+ - For init db struncture run console cmd `flask db upgrade`
 
 ## Swagger UI
 http://127.0.0.1:5000/apidocs/
