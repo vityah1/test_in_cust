@@ -13,16 +13,14 @@ venv\scripts\activate
 pip3 install -r requirements.txt
 ```
 ## Configuration and setting
-Create and edit simple txt config.json file with next structure:
+Create and edit .env file with next vars:
 
-```json
-{
-"db_host": "your_db_host",
-"db_user": "db_user",
-"db_passwd": "db_password",
-"db_db": "db_name",
-"secret_key": "your_super_secret_key_for_jwt_auth",
-}
+```.env
+db_host=your db host
+db_user = your db user
+db_passwd = your db password
+db_db = your db
+secret_key = your super secret key
 ```
 
 ## Create database tables
@@ -33,17 +31,25 @@ flask db migrate -m "Initial migration."
 flask db upgrade
 ```
 
+## Swagger UI
+http://127.0.0.1:5000/apidocs/
 ## Local run
 if you run it localy
 ```cmd
 python app.app 
 ```
 
-## Swagger UI
-http://127.0.0.1:5000/apidocs/
-
 ## Deploy on virtual apache shared hosting
 edit .htaccess file according to your paths
 
-
+## Deploy on Heroku
+- SigUp you account
+- create app `name your app`
+- download heroku CLI
+- excecute:
+```cmd
+heroku login
+heroku git:clone -a `name your app`
+git push heroku master 
+```
 
