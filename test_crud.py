@@ -1,10 +1,5 @@
-import os
-import tempfile
-
 import pytest
-
 from app import app
-
 
 test_user = "user_1"
 
@@ -17,7 +12,7 @@ data = {
 }
 
 item_id = 1
-accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTY3NjU4NiwianRpIjoiYmU3YzFkOWMtYjY3MC00ZTNkLWJjMmQtZTI1NmZlNjFlN2RiIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MjIsIm5iZiI6MTY0OTY3NjU4NiwiZXhwIjoxNjUyMjY4NTg2fQ.F-lmyaczJuNVgusC3lC5Ea3Ottij2PvMHEKrrl2yDoQ"
+accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTc2OTIyMCwianRpIjoiZGNlM2NmYmUtMmI1Yy00YTM0LWJkZGEtNzk4YTM5N2UxZGU0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjQ5NzY5MjIwLCJleHAiOjE2NTIzNjEyMjB9.cCu0OGg9JX_MhzUgYAfNJdEcE04zRWMwTxQPvCt_FAM"
 headers = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {accessToken}",

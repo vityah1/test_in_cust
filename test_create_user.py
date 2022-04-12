@@ -8,7 +8,7 @@ from app import app
 test_user = f"user_3"
 
 item_id = 1
-accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTY4NDIwNiwianRpIjoiNzY0NmQxYTMtM2NlOC00MGJiLTlmMDItOTJhZjkzZjIyMWZlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjQ5Njg0MjA2LCJleHAiOjE2NTIyNzYyMDZ9.rq1Wz9yHa8CefIPbVh_oUI4hegNFXGla_0qXvJZELm8"
+accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTc2OTIyMCwianRpIjoiZGNlM2NmYmUtMmI1Yy00YTM0LWJkZGEtNzk4YTM5N2UxZGU0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjQ5NzY5MjIwLCJleHAiOjE2NTIzNjEyMjB9.cCu0OGg9JX_MhzUgYAfNJdEcE04zRWMwTxQPvCt_FAM"
 headers = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {accessToken}",
