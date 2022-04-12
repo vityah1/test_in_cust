@@ -23,7 +23,7 @@ migrate = Migrate()
 app = Flask(__name__)
 swagger = Swagger(app)
 CORS(app, support_credentials=True)
-from func import cfg
+from config import cfg
 
 
 @app.before_request
