@@ -3,7 +3,6 @@
 # import cgitb
 # gitb.enable()
 import sys
-from os import environ
 
 # added for venv shared hosting
 sys.path.insert(0, "/home/vityah1/kt.if.ua/mypy/gapi/lib/python3.6/site-packages")
@@ -12,10 +11,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
-
 from flask_migrate import Migrate
-
-# print("import ok")
 
 from mydb import db
 
@@ -38,10 +34,6 @@ def log_request_info():
                 err.write(f"{e}\n")
 
 
-# app.config[
-#     "SQLALCHEMY_DATABASE_URI"
-# ] = f"""mysql+pymysql://{cfg['db_user']}:{cfg['db_passwd']}@{cfg['db_host']}/{cfg['db_db']}"""
-
 app.config["SQLALCHEMY_DATABASE_URI"] = cfg["DATABASE_URL"]
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["PROPAGATE_EXCEPTIONS"] = True
@@ -59,8 +51,6 @@ from auth.auth import auth_bp
 
 app.register_blueprint(api_crud_bp)
 app.register_blueprint(auth_bp)
-
-# app = create_app()
 
 
 def __repr__(self):
@@ -85,5 +75,4 @@ if __name__ == "__main__":
     #    app.run(host='0.0.0.0',port=4000)
     # app.run(host="0.0.0.0", debug=False)
     # app.run(host="0.0.0.0", port=5000, debug=True)
-    port = int(environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=cfg.get("PORT", 5000))

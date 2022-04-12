@@ -4,8 +4,6 @@ from flask_cors import cross_origin
 from flasgger import swag_from
 from utils import do_sql_cmd, do_sql_sel
 
-# from func import cfg
-# from models import Item
 
 api_crud_bp = Blueprint(
     "api_crud_bp",
@@ -54,7 +52,6 @@ def create_item():
 
 
 @api_crud_bp.route("/api/items", methods=["GET"])
-# @cross_origin(supports_credentials=True)
 @cross_origin()
 @jwt_required()
 @swag_from("list_items.yml")
@@ -109,13 +106,6 @@ limit 10 offset :offset
     res = do_sql_sel(sql, sql_data_conditions)
     result = [dict(row) for row in res]
 
-    # if res[0].get("rowcount") is not None and res[0].get("rowcount") < 0:
-    #     return jsonify(
-    #         {
-    #             "status": "error",
-    #             "data": [{"article": "error", "name": "Error excecute sql command"}],
-    #         }
-    #     )
     return jsonify({"status": "ok", "data": result})
 
 
@@ -123,11 +113,11 @@ limit 10 offset :offset
 @cross_origin()
 @jwt_required()
 @swag_from("list_item.yml")
-def ret_cost(id):
+def show_item(id):
     """
     get info about item
-
     """
+
     sql = f"""select id,article,name,item_image,price,currency 
     from `items` 
     where id=:id and id_user=:id_user and deleted != 1
@@ -141,9 +131,10 @@ def ret_cost(id):
 @cross_origin()
 @jwt_required()
 @swag_from("item_delete.yml")
-def del_cost(id):
+def del_item(id):
     """
-    mark item deleted"""
+    mark item deleted
+    """
 
     res = do_sql_cmd(
         "update `items` set deleted=1 where id=:id and id_user=:id_user",
@@ -161,8 +152,9 @@ def del_cost(id):
 @swag_from("item_update.yml")
 def upd_item(id):
     """
-    update a item
+    update a item and price item
     """
+
     req = request.get_json()
     sql = f"""update items set article=:article,name=:name,item_image=:item_image
     where id=:id and id_user=:id_user"""
