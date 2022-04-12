@@ -38,9 +38,11 @@ def log_request_info():
                 err.write(f"{e}\n")
 
 
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = f"""mysql+pymysql://{cfg['db_user']}:{cfg['db_passwd']}@{cfg['db_host']}/{cfg['db_db']}"""
+# app.config[
+#     "SQLALCHEMY_DATABASE_URI"
+# ] = f"""mysql+pymysql://{cfg['db_user']}:{cfg['db_passwd']}@{cfg['db_host']}/{cfg['db_db']}"""
+
+app.config["SQLALCHEMY_DATABASE_URI"] = cfg["DATABASE_URL"]
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["PROPAGATE_EXCEPTIONS"] = True
 app.config["JWT_SECRET_KEY"] = cfg["secret_key"]
